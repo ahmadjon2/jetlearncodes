@@ -1,0 +1,28 @@
+import pygame
+from pygame.locals import *
+pygame.init()
+import random 
+
+clock=pygame.time.Clock()
+fps = 60
+
+screen_width = 800
+screen_height = 930
+screen = pygame.display.set_mode([screen_width,screen_height])
+pygame.display.set_caption("Flappy Bird")
+font = pygame.font.SysFont("arial",70) 
+white = (255,255,255)
+score = 0
+groundscroll = 0
+scrollspeed = 4
+flying = False
+gameover=False
+pipegap = 150
+pipefrequency = 1500
+lastpipe = pygame.time.get_ticks() - pipefrequency
+pastpipe = False
+
+ground = pygame.image.load("D:/Foldergamedevelopment/assets/ground.png")
+restart = pygame.image.load("D:/Foldergamedevelopment/assets/restart.png")
+pipe = pygame.image.load("D:/Foldergamedevelopment/assets/pipe.png")
+bg = pygame.image.load("D:/Foldergamedevelopment?assets/bg.png")
