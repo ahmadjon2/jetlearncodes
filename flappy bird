@@ -24,14 +24,14 @@ pastpipe = False
 
 ground = pygame.image.load("D:/Foldergamedevelopment/assets/ground.png")
 button = pygame.image.load("D:/Foldergamedevelopment/assets/restart.png")
-bg = pygame.image.load("D:/Foldergamedevelopmentassets/bg.png")
+bg = pygame.image.load("D:/Foldergamedevelopment/assets/bg.png")
 
 def draw_text(text,font,text_col,x,y):
     img =font.render(text,True,text_col)
     screen.blit(img,(x,y))
 
 def reset_game():
-    pipe_group.empty()
+    pipegroup.empty()
     flappy.rect.x = 100
     flappy.rect.y = int(screen_height/2)
     score = 0
@@ -44,7 +44,7 @@ class Bird(pygame.sprite.Sprite):
         self.index = 0
         self.counter = 0
         for num in range(1,4):
-            img = pygame.image.load(f"D:/Foldergamedevelopmentassets/bird{num}.png")
+            img = pygame.image.load(f"D:/Foldergamedevelopment/assets/bird{num}.png")
             self.images.append(img)
             self.image = self.images[self.index]
             self.rect = self.image.get_rect()
@@ -74,4 +74,92 @@ class Bird(pygame.sprite.Sprite):
                     self.image = self.images[self.index]
             self.image = pygame.transform.rotate(self.images[self.index],self.vel *- 2)
         else :
-            pygame.transform.rotate(self.images[self.index] - 90)
+            self.image = pygame.transform.rotate(self.images[self.index], -90)
+
+class Pipe (pygame.sprite.Sprite) :
+    def __init__(self,x,y,pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("D:/Foldergamedevelopment/assets/pipe.png")
+        self.rect = self.image.get_rect()
+        if pos == 1:
+            self.image = pygame.transform.flip(self.image,False,True)
+            self.rect.bottomleft = [x,y - int(pipegap/2)]
+        elif pos == -1:
+            self.rect.topleft = [x,y + int(pipegap/2)]
+    def update(self):
+        self.rect.x -= scrollspeed
+        if self.rect.right < 0:
+            self.kill()
+
+class Button:
+    def __init__(self,x,y,image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
+
+    def draw(self):
+        action = False
+        pos = pygame.mouse.get_pos()
+        if self.rect.collidepoint(pos):
+            if pygame.mouse.get_pressed()[0] == 1:
+                action = True
+        screen.blit(self.image,(self.rect.x,self.rect.y))
+        return action
+
+pipegroup = pygame.sprite.Group()
+birdgroup = pygame.sprite.Group()
+flappy = Bird(100,int(screen_height/2))
+birdgroup.add(flappy)
+button = Button(screen_width//2-50,screen_height//2-100,button)
+run = True
+
+while run:
+    clock.tick(fps)
+    screen.blit(bg,(0,0))
+    pipegroup.draw(screen)
+    birdgroup.draw(screen)
+    birdgroup.update()
+    screen.blit(ground,(groundscroll,768))
+    if len(pipegroup) > 0:
+        if birdgroup.sprites()[0].rect.left > pipegroup.sprites()[0].rect.left and birdgroup.sprites()[0].rect.right < pipegroup.sprites()[0].rect.right and pastpipe == False :
+            pastpipe = True
+        if pastpipe == True:
+            if birdgroup.sprites()[0].rect.left > pipegroup.sprites()[0].rect.right:
+                score += 1
+                pastpipe = False
+    draw_text(str(score),font,white,int(screen_width/2),20)
+    if pygame.sprite.groupcollide(birdgroup,pipegroup,False,False) or flappy.rect.top < 0:
+        gameover = True
+    if flappy.rect.bottom >= 768 :
+        gameover = True
+        flying = False
+    if flying == True and gameover == False:
+        time_now = pygame.time.get_ticks()
+        if time_now - lastpipe > pipefrequency:
+            pipeheight = random.randint(-100,100)
+            btm_pipe = Pipe(screen_width,int(screen_height/2)+ pipeheight,-1)
+            top_pipe = Pipe(screen_width,int(screen_height/2)+ pipeheight,1) 
+            pipegroup.add(btm_pipe)
+            pipegroup.add(top_pipe)
+            lastpipe = time_now
+        pipegroup.update()
+        groundscroll -= scrollspeed
+        if abs(groundscroll) > 35:
+            groundscroll  = 0
+    if gameover == True:
+        if button.draw():
+            gameover = False
+            score = reset_game()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+        if event.type == pygame.MOUSEBUTTONDOWN and flying == False and gameover == False:
+            flying = True
+    pygame.display.update()
+pygame.quit()
+
+
+
+
+
+        
