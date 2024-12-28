@@ -11,7 +11,7 @@ score = 0
 
 def changebackground(img):
     background = pygame.image.load(img)
-    bg = pygame.transform.scale(background,(screen_height,screen_width))
+    bg = background #"pygame.transform.scale(background,(screen_height,screen_width))"
     screen.blit(bg,(0,0))
 
 class Bin(pygame.sprite.Sprite):
@@ -60,7 +60,7 @@ white = (255,255,255)
 red = (255,0,0)
 playing=True
 scor = 0
-clock = pygame.time.clock()
+clock = pygame.time.Clock()
 startime = time.time()
 myFont = pygame.font.SysFont("arial",22)
 timingfont = pygame.font.SysFont("arial",22)
@@ -79,7 +79,33 @@ while playing:
         else:
             text = "BETTER LUCK NEXT TIME",True,red
             changebackground("tolosescreen.jpg")
-            
-            
-    
-
+        screen.blit(text,(250,40))
+    else:
+        changebackground("bee_backround.png")
+        countDown = timingfont.render("time left:"+str(60-int(timelapsed)),True,white)
+        screen.blit(countDown,(20,10))
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            if bin.rect.y > 0 :
+                bin.rect.y -= 30
+        if keys[pygame.K_DOWN]:
+            if bin.rect.y < 630:
+                bin.rect.y += 30       
+        if keys[pygame.K_LEFT]:
+            if bin.rect.x > 0 :
+                bin.rect.x -= 30
+        if keys[pygame.K_RIGHT]:
+            if bin.rect.x < 950:
+                bin.rect.x += 30
+        item_hit_list = pygame.sprite.spritecollide(bin,items_list,True)     
+        plastic_hit_list = pygame.sprite.spritecollide(bin,plastic_list,True) 
+        for item in item_hit_list:
+            score += 1
+            text = myFont.render("score = "+str(score),True,white)
+        for plastic in plastic_hit_list:
+            score -= 5
+            text = myFont.render("score ="+str(score),True,white)
+        screen.blit(text,(200,10))
+        all_sprites.draw(screen)
+    pygame.display.update()
+pygame.quit()
