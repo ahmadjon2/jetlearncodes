@@ -11,7 +11,7 @@ score = 0
 
 def changebackground(img):
     background = pygame.image.load(img)
-    bg = background #"pygame.transform.scale(background,(screen_height,screen_width))"
+    bg = background 
     screen.blit(bg,(0,0))
 
 class Bin(pygame.sprite.Sprite):
