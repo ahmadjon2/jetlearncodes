@@ -14,4 +14,29 @@ class Queeuuee:
             self.available -= 1
 
     def dequeue(self):
-        pass
+        if self.available == self.size:
+            print("queue is empty")
+        else:
+            self.queue[self.front] = None
+            self.front = (self.front + 1)%self.size
+            self.available += 1
+
+    def peek(self):
+        print(self.queue[self.front])
+
+    def printq(self):
+        print(self.queue)
+
+que = Queeuuee(5)
+que.printq()
+que.enqueue(2)
+que.enqueue(9)
+que.enqueue(7)
+que.enqueue(3)
+que.enqueue(5)
+que.peek()
+que.dequeue()
+que.printq()
+que.enqueue(6)
+que.printq()
+que.peek()
