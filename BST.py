@@ -17,6 +17,16 @@ def insertdata(root,data):
     if data < root.data:
         root.leftnode = insertdata(root.leftnode,data)       
     return root
+def search(root,data):
+    if data == root.data:
+        return root
+    elif data < root.data and root.leftnode != None:
+        return search(root.leftnode,data) 
+    elif data > root.data and root.rightnode != None:
+        return search(root.rightnode,data)
+    else:
+        return -1
+
 root = None
 root = insertdata(root,7)
 root = insertdata(root,5)
@@ -24,3 +34,10 @@ root = insertdata(root,6)
 root = insertdata(root,85)
 
 inorderstaversal(root)
+searching = search(root,99)
+if searching == -1:
+    print("the searched number is not there")
+else:
+    print("the searched number was found, ",root.data)
+
+
