@@ -7,7 +7,7 @@ class Graph():
         self.list[v2].append(v1)
     def bfs(self,source):
         visited = [False]*self.nv
-        res = []
+        res = []#the sequence
         queue = []
         queue.append(source)
         visited[source] = True
@@ -20,14 +20,28 @@ class Graph():
                     queue.append(node)
         return res  
     def dfs(self,source):   
-      
+        visited = [False]*self.nv
+        res = []
+        self.dfs_util(source, visited, res)
+        return res
+    
+    def dfs_util(self, src, visited, res):
+        res.append(src)
+        visited[src] = True
+        for node in self.list[src]:
+            if visited[node] == False:
+                self.dfs_util(node, visited, res)
+
+
 
 object = Graph(4)
 object.createdges(0,1)
-object.createdges(1,2)
-object.createdges(2,3)
 object.createdges(0,2)
 object.createdges(1,3)
+object.createdges(2,3)
+
 print(object.list)
-store = object.bfs(2)
+store = object.bfs(0)
+print(store)
+store = object.dfs(0)
 print(store)
